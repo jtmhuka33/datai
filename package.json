@@ -16,6 +16,10 @@
       {
         "command": "datai.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "datai.bloggingApplicationSchema",
+        "title": "Generate Schema: PostgresQL Blogging Application"
       }
     ]
   },
