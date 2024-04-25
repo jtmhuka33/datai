@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import path from "path";
-
+import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 
 const dotenv = require("dotenv").config();
 /**
@@ -9,7 +9,7 @@ const dotenv = require("dotenv").config();
  * the schema of a typical blogging application
  */
 // Define a function to generate an SQL schema for a blogging platform
-function generateSchemaBlogging() {
+async function generateSchemaBlogging() {
 	// Access the list of open workspace folders
 	const workspaceFolders = vscode.workspace.workspaceFolders;
   
@@ -34,8 +34,7 @@ function generateSchemaBlogging() {
 	}
   
 	// Define the SQL schema content as a string
-	const content =
-	  "-- SQL Database Preset One Schema\nCREATE TABLE example (id INT, data VARCHAR(100));";
+	const content = await generateBlogSchemaOpenAI();
   
 	// Define the full path for the new SQL file within the 'schema' folder
 	const filepath = path.join(folderPath, "schema.sql");
