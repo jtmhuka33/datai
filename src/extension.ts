@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
+import fs from "fs";
+import path from "path";
 
-const fs = require("fs");
-const path = require("path");
 
+const dotenv = require("dotenv").config();
 /**
  * this function is triggered to generate files and code that resembles
  * the schema of a typical blogging application
