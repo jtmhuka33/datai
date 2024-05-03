@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 import { readFileContent } from "./utils/readFileContent";
+import { generateBlogApiOPENAI } from "./generateBloggingApi/generateBloggingApi";
 
 /**
  * this function is triggered to generate files and code that resembles
@@ -65,14 +66,33 @@ async function generateAPIBlogging() {
   const folderPath = path.join(workspacePath, "api");
   const schemaFolderPath = path.join(workspacePath, "schema");
 
-  if (!fs.existsSync(folderPath)){
-    fs.mkdirSync(folderPath, {recursive: true});
+  if (!fs.existsSync(folderPath)) {
+    fs.mkdirSync(folderPath, { recursive: true });
     vscode.window.showInformationMessage(`Folder 'api' created `);
   }
 
-  const schemaContent = await readFileContent(path.join(schemaFolderPath, "schema.sql"))
+  const schemaContent = await readFileContent(
+    path.join(schemaFolderPath, "schema.sql")
+  );
 
-  const content = await 
+  if (!schemaContent) {
+    vscode.window.showErrorMessage("Schema Content is NULL");
+    return;
+  }
+
+  const content = await generateBlogApiOPENAI(schemaContent);
+
+  const filePath = path.join(folderPath, "api.js");
+
+  fs.writeFile(filePath, content, (err: any) => {
+    if (err) {
+      vscode.window.showErrorMessage("Error writing file: " + err.message);
+    } else {
+      vscode.window.showInformationMessage(
+        `File api.js created at ${folderPath}`
+      );
+    }
+  });
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -87,8 +107,14 @@ export function activate(context: vscode.ExtensionContext) {
     "datai.bloggingApplicationSchema",
     generateSchemaBlogging
   );
+
+  let bloggingApi = vscode.commands.registerCommand(
+    "datai.bloggingApplicationApi",
+    generateAPIBlogging
+  );
   context.subscriptions.push(bloggingSchema);
   context.subscriptions.push(disposable);
+  context.subscriptions.push(bloggingApi);
 }
 
 export function deactivate() {}
