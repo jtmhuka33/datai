@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import fs from "fs";
 import path from "path";
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
+import { readFileContent } from "./utils/readFileContent";
 
 /**
  * this function is triggered to generate files and code that resembles
@@ -33,7 +34,7 @@ async function generateSchemaBlogging() {
   }
 
   // Define the SQL schema content as a string
-  const content = await generateBlogSchemaOpenAI(process.env.API_KEY);
+  const content = await generateBlogSchemaOpenAI();
 
   // Define the full path for the new SQL file within the 'schema' folder
   const filepath = path.join(folderPath, "schema.sql");
@@ -54,9 +55,24 @@ async function generateSchemaBlogging() {
 }
 
 async function generateAPIBlogging() {
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) {
+    vscode.window.showErrorMessage("No Workspace is open!");
+    return;
+  }
 
-  
+  const workspacePath = workspaceFolders[0].uri.fsPath;
+  const folderPath = path.join(workspacePath, "api");
+  const schemaFolderPath = path.join(workspacePath, "schema");
 
+  if (!fs.existsSync(folderPath)){
+    fs.mkdirSync(folderPath, {recursive: true});
+    vscode.window.showInformationMessage(`Folder 'api' created `);
+  }
+
+  const schemaContent = await readFileContent(path.join(schemaFolderPath, "schema.sql"))
+
+  const content = await 
 }
 
 export function activate(context: vscode.ExtensionContext) {

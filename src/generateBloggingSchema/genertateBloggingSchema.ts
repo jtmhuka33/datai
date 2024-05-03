@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-export async function generateBlogSchemaOpenAI(apiKey: string | undefined) {
+export async function generateBlogSchemaOpenAI() {
   const openai = new OpenAI({ apiKey: process.env.API_KEY });
   const completion = await openai.chat.completions.create({
     messages: [
