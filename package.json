@@ -23,7 +23,7 @@
       },
       {
         "command": "datai.bloggingApplicationApi",
-        "title": "Generate Schema: PostgresQL Blogging Application"
+        "title": "Generate API: API Blogging Application"
       }
     ]
   },
