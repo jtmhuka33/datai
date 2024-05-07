@@ -24,7 +24,7 @@ async function generateSchemaBlogging() {
   const workspacePath = workspaceFolders[0].uri.fsPath;
 
   // Define the path for a new folder called "schema" inside the workspace
-  const folderPath = path.join(workspacePath, "schema");
+  const folderPath = path.join(workspacePath, "/src/schema");
 
   // Check if the 'schema' folder does not exist
   if (!fs.existsSync(folderPath)) {
@@ -63,8 +63,8 @@ async function generateAPIBlogging() {
   }
 
   const workspacePath = workspaceFolders[0].uri.fsPath;
-  const folderPath = path.join(workspacePath, "api");
-  const schemaFolderPath = path.join(workspacePath, "schema");
+  const folderPath = path.join(workspacePath, "/src/api");
+  const schemaFolderPath = path.join(workspacePath, "/src/schema");
 
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath, { recursive: true });
