@@ -4,6 +4,7 @@ import path from "path";
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 import { readFileContent } from "./utils/readFileContent";
 import { generateBlogApiOPENAI } from "./generateBloggingApi/generateBloggingApi";
+import { table } from "console";
 
 /**
  * this function is triggered to generate files and code that resembles
@@ -80,19 +81,19 @@ async function generateAPIBlogging() {
     return;
   }
 
-  const content = await generateBlogApiOPENAI(schemaContent);
-
   const filePath = path.join(folderPath, "api.js");
 
-  fs.writeFile(filePath, content, (err: any) => {
-    if (err) {
-      vscode.window.showErrorMessage("Error writing file: " + err.message);
-    } else {
-      vscode.window.showInformationMessage(
-        `File api.js created at ${folderPath}`
-      );
-    }
-  });
+  for (const schemaTable of schemaContent) {
+    const content = await generateBlogApiOPENAI(schemaTable);
+    fs.appendFile(filePath, content, (err:any) => {
+      if (err) { 
+        vscode.window.showErrorMessage("Error writing file: " + err.message);
+      } else {
+        vscode.window.showInformationMessage(`Done!`);
+      }
+    });
+  }
+
 }
 
 export function activate(context: vscode.ExtensionContext) {

@@ -14,6 +14,7 @@ export async function readFileContent(filePath: string) {
     console.log(contentSplit);
 
     return contentSplit;
+    
   } catch (error) {
     console.error("Error reading file: ", error);
     return null;
