@@ -4,7 +4,6 @@ import path from "path";
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 import { readFileContent } from "./utils/readFileContent";
 import { generateBlogApiOPENAI } from "./generateBloggingApi/generateBloggingApi";
-import { table } from "console";
 
 /**
  * this function is triggered to generate files and code that resembles
