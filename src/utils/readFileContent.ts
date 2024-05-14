@@ -7,7 +7,7 @@ export async function readFileContent(filePath: string) {
 
     const binaryContent = await vscode.workspace.fs.readFile(fileUri);
 
-    const contentWhole = Buffer.from(binaryContent).toString("utf-8");
+    const contentWhole = Buffer.from(binaryContent).toString("utf-8"); 
 
     const contentSplit = splitSchemaContent(contentWhole);
 

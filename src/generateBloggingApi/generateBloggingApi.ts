@@ -7,7 +7,8 @@ export async function generateBlogApiOPENAI(content: string) {
       {
         role: "system",
         content:
-          "You are helpful coding assistant whose primary job is to code a tyical api accouting for the provided postgresql schema code.",
+          "You are helpful coding assistant whose primary job is to code a typical api accounting for the provided postgresql schema code." +
+           "Make sure to include full implementation for each API request. Do not include module imports as these may already exist",
       },
       {
         role: "user",

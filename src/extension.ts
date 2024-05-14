@@ -4,7 +4,6 @@ import path from "path";
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 import { readFileContent } from "./utils/readFileContent";
 import { generateBlogApiOPENAI } from "./generateBloggingApi/generateBloggingApi";
-import { table } from "console";
 
 /**
  * this function is triggered to generate files and code that resembles
@@ -31,7 +30,7 @@ async function generateSchemaBlogging() {
   if (!fs.existsSync(folderPath)) {
     // Create the folder and all necessary parent folders with 'recursive: true' option5
     fs.mkdirSync(folderPath, { recursive: true });
-    // Show an information message confirming the folder creation5
+    // Show an information message confirming the folder creation
     vscode.window.showInformationMessage(`Folder 'schema' created.`);
   }
 
@@ -62,7 +61,7 @@ async function generateAPIBlogging() {
     vscode.window.showErrorMessage("No Workspace is open!");
     return;
   }
-
+  
   const workspacePath = workspaceFolders[0].uri.fsPath;
   const folderPath = path.join(workspacePath, "/src/api");
   const schemaFolderPath = path.join(workspacePath, "/src/schema");
