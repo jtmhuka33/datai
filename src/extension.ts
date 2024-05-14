@@ -19,7 +19,6 @@ async function generateSchemaBlogging() {
     vscode.window.showErrorMessage("No Workspace is open!");
     return;
   }
-
   // Get the file system path of the first workspace folder
   const workspacePath = workspaceFolders[0].uri.fsPath;
 

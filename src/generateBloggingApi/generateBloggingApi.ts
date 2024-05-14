@@ -40,7 +40,7 @@ export async function generateBlogApiOPENAI(content: string) {
                   Use async/await for all database interactions. Only include the code and no other text`,
       },
     ],
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o",
   });
   const resolvedFirstChoice = completion.choices[0].message.content;
 
