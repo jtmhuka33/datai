@@ -11,8 +11,6 @@ export async function readFileContent(filePath: string) {
 
     const contentSplit = splitSchemaContent(contentWhole);
 
-    console.log(contentSplit);
-
     return contentSplit;
     
   } catch (error) {

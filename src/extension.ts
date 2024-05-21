@@ -62,12 +62,12 @@ async function generateAPIBlogging() {
   }
   
   const workspacePath = workspaceFolders[0].uri.fsPath;
-  const folderPath = path.join(workspacePath, "/src/api");
+  const folderPath = path.join(workspacePath, "/src/routes");
   const schemaFolderPath = path.join(workspacePath, "/src/schema");
 
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath, { recursive: true });
-    vscode.window.showInformationMessage(`Folder 'api' created `);
+    vscode.window.showInformationMessage(`Folder 'routes' created `);
   }
 
   const schemaContent = await readFileContent(
@@ -79,19 +79,33 @@ async function generateAPIBlogging() {
     return;
   }
 
-  const filePath = path.join(folderPath, "api.js");
+  const tableNames: string[] = [];
+  const tableRegex = /CREATE TABLE\s+(\w+)/;
+  const filePaths: string[] = [];
 
-  for (const schemaTable of schemaContent) {
-    const content = await generateBlogApiOPENAI(schemaTable);
-    fs.appendFile(filePath, content, (err:any) => {
+
+  //extract table names to create separate files. 
+  schemaContent.forEach(schema => {
+    const match = schema.match(tableRegex);
+    if (match) {
+      tableNames.push(match[1]);
+    }
+  });
+
+  tableNames.forEach(name => {
+    filePaths.push(path.join(folderPath, name + '.js'.toLowerCase()));
+  });
+
+  for (let i = 0; i < schemaContent.length; i++) {
+    const content = await generateBlogApiOPENAI(schemaContent[i]);
+    fs.appendFile(filePaths[i], content, (err:any) => {
       if (err) { 
         vscode.window.showErrorMessage("Error writing file: " + err.message);
       } else {
         vscode.window.showInformationMessage(`Done!`);
       }
     });
-  }
-
+  } 
 }
 
 export function activate(context: vscode.ExtensionContext) {
