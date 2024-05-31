@@ -108,6 +108,8 @@ async function generateAPIBlogging() {
   } 
 }
 
+
+
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "datai" is now active!');
 
@@ -115,7 +117,6 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage("Hello World from datai!");
   });
 
-  //Test
   let bloggingSchema = vscode.commands.registerCommand(
     "datai.bloggingApplicationSchema",
     generateSchemaBlogging
@@ -125,6 +126,24 @@ export function activate(context: vscode.ExtensionContext) {
     "datai.bloggingApplicationApi",
     generateAPIBlogging
   );
+
+  //Creating WebView
+  let customiseSchema = vscode.commands.registerCommand(
+    "datai.openSchemaDesigner", function () {
+      const panel = vscode.window.createWebviewPanel(
+        'schemaDesigner',
+        'Schema Designer',
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true
+        }
+      );
+      panel.webview.html = getWebviewContent();
+    }
+  )
+  
+
+
   context.subscriptions.push(bloggingSchema);
   context.subscriptions.push(disposable);
   context.subscriptions.push(bloggingApi);

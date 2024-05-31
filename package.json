@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:datai.openSchemaDesigner customise"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -24,6 +26,10 @@
       {
         "command": "datai.bloggingApplicationApi",
         "title": "Generate API: API Blogging Application"
+      }
+      {
+        "command": "datai.openSchemaDesigner",
+        "title": "Generate: Custom Schema"
       }
     ]
   },
