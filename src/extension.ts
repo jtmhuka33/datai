@@ -141,7 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
       );
       panel.webview.html = getWebviewContent();
     }
-  )
+  );
   
 
 
