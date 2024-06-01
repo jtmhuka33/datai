@@ -136,7 +136,7 @@ export function activate(context: vscode.ExtensionContext) {
           enableScripts: true
         }
       );
-      panel.webview.html = getWebviewContent();
+      panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
     }
   );
 
@@ -147,3 +147,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+
+module.exports = {
+  activate, deactivate
+};
