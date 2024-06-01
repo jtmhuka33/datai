@@ -84,8 +84,6 @@ async function generateAPIBlogging() {
   const tableRegex = /CREATE TABLE\s+(\w+)/;
   const filePaths: string[] = [];
 
-
-  //extract table names to create separate files. 
   schemaContent.forEach(schema => {
     const match = schema.match(tableRegex);
     if (match) {
@@ -108,7 +106,6 @@ async function generateAPIBlogging() {
     });
   } 
 }
-
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -142,12 +139,11 @@ export function activate(context: vscode.ExtensionContext) {
       panel.webview.html = getWebviewContent();
     }
   );
-  
-
 
   context.subscriptions.push(bloggingSchema);
   context.subscriptions.push(disposable);
   context.subscriptions.push(bloggingApi);
+  context.subscriptions.push(customiseSchema);
 }
 
 export function deactivate() {}
