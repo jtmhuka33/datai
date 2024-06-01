@@ -133,12 +133,15 @@ export function activate(context: vscode.ExtensionContext) {
         'Schema Designer',
         vscode.ViewColumn.One,
         {
-          enableScripts: true
+          enableScripts: true,
+          localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, './webview-app/build/static/')]
         }
       );
       panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
     }
   );
+
+  console.log("Extenstion uri: ", context.extensionUri);
 
   context.subscriptions.push(bloggingSchema);
   context.subscriptions.push(disposable);
