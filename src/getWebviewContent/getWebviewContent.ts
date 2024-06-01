@@ -25,7 +25,7 @@ export function getWebviewContent () {
                 const container = document.getElementById('tablesContainer');
                 const tableDiv = document.createElement('div');
                 tableDiv.innerHTML = '<strong>' + tableName + '</strong>: <input type="text" placeholder="Enter column definitions" />';
-                container.appendChild(tableSpec);
+                container.appendChild(tableDiv);
             }
 
             document.getElementById('schemaForm').addEventListener('submit', event => {

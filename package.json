@@ -29,7 +29,7 @@
       },
       {
         "command": "datai.openSchemaDesigner",
-        "title": "Generate: Custom Schema"
+        "title": "Generate Schema: Custom Schema"
       }
     ]
   },
