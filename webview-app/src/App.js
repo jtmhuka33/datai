@@ -1,8 +1,9 @@
 import './App.css';
+import TableCard from './components/TableCard/TableCard';
 
 function App() {
   return (
-    <h1>Hello World</h1>
+    <TableCard/>
   );
 }
 
