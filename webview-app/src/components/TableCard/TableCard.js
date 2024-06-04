@@ -7,6 +7,7 @@ import {
   Box,
   TextField,
 } from "@mui/material";
+import ColumnButton from "../ColumnButton/ColumnButton";
 
 export default function TableCard() {
   return (
@@ -20,12 +21,11 @@ export default function TableCard() {
               size="medium"
               sx={{ marginRight: 2 }}
             />
-            <Button color="success" variant="contained">ADD TABLE</Button>
+            <Button color="success" variant="contained">ADD COLUMN</Button>
           </Box>
         }
       />
-
-      <CardContent>{/**  */}</CardContent>
+      <CardContent><ColumnButton/></CardContent>
       <CardActions>
         <Button color="error" variant="contained">DELETE TABLE</Button>
       </CardActions>

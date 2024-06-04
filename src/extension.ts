@@ -61,7 +61,7 @@ async function generateAPIBlogging() {
     vscode.window.showErrorMessage("No Workspace is open!");
     return;
   }
-  
+
   const workspacePath = workspaceFolders[0].uri.fsPath;
   const folderPath = path.join(workspacePath, "/src/routes");
   const schemaFolderPath = path.join(workspacePath, "/src/schema");
@@ -84,29 +84,28 @@ async function generateAPIBlogging() {
   const tableRegex = /CREATE TABLE\s+(\w+)/;
   const filePaths: string[] = [];
 
-  schemaContent.forEach(schema => {
+  schemaContent.forEach((schema) => {
     const match = schema.match(tableRegex);
     if (match) {
       tableNames.push(match[1]);
     }
   });
 
-  tableNames.forEach(name => {
-    filePaths.push(path.join(folderPath, name + '.js'.toLowerCase()));
+  tableNames.forEach((name) => {
+    filePaths.push(path.join(folderPath, name + ".js".toLowerCase()));
   });
 
   for (let i = 0; i < schemaContent.length; i++) {
     const content = await generateBlogApiOPENAI(schemaContent[i]);
-    fs.appendFile(filePaths[i], content, (err:any) => {
-      if (err) { 
+    fs.appendFile(filePaths[i], content, (err: any) => {
+      if (err) {
         vscode.window.showErrorMessage("Error writing file: " + err.message);
       } else {
         vscode.window.showInformationMessage(`Done!`);
       }
     });
-  } 
+  }
 }
-
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "datai" is now active!');
@@ -127,21 +126,28 @@ export function activate(context: vscode.ExtensionContext) {
 
   //Creating WebView
   let customiseSchema = vscode.commands.registerCommand(
-    "datai.openSchemaDesigner", function () {
+    "datai.openSchemaDesigner",
+    function () {
       const panel = vscode.window.createWebviewPanel(
-        'schemaDesigner',
-        'Schema Designer',
+        "schemaDesigner",
+        "Schema Designer",
         vscode.ViewColumn.One,
         {
           enableScripts: true,
-          localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, './webview-app/build/static/')]
+          localResourceRoots: [
+            vscode.Uri.joinPath(
+              context.extensionUri,
+              "./webview-app/build/static/"
+            ),
+          ],
         }
       );
-      panel.webview.html = getWebviewContent(panel.webview, context.extensionUri);
+      panel.webview.html = getWebviewContent(
+        panel.webview,
+        context.extensionUri
+      );
     }
   );
-
-  console.log("Extenstion uri: ", context.extensionUri);
 
   context.subscriptions.push(bloggingSchema);
   context.subscriptions.push(disposable);
@@ -152,5 +158,6 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 module.exports = {
-  activate, deactivate
+  activate,
+  deactivate,
 };
