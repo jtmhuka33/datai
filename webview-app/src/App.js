@@ -6,12 +6,12 @@ function App() {
   return (
     <>
       <Grid  width="33%" container>
-        <Grid sx={{marginBottom: 3}} sm={6} xl={12} item>
+        <Grid sx={{marginBottom: 7}} sm={6} xl={12} item>
           <Stack spacing={8} direction="row">
             <h2>Custom Schema Generator</h2>
             <Box sx={{ flexGrow: 1}}/>
             <Button color="success" variant="contained">
-              ADD TABLE
+              Add Table
             </Button>
           </Stack>
         </Grid>
