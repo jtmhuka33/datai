@@ -5,6 +5,7 @@ import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBlog
 import { readFileContent } from "./utils/readFileContent";
 import { generateBlogApiOPENAI } from "./generateBloggingApi/generateBloggingApi";
 import { getWebviewContent } from "./getWebviewContent/getWebviewContent";
+import { generateCustomSchema } from "./generateCustomSchema/generateCustomSchema";
 
 /**
  * this function is triggered to generate files and code that resembles
@@ -146,6 +147,44 @@ export function activate(context: vscode.ExtensionContext) {
         panel.webview,
         context.extensionUri
       );
+
+      panel.webview.onDidReceiveMessage(async (message) => {
+        switch (message.type) {
+          case "generateCustomSchema":
+            const workspaceFolders = vscode.workspace.workspaceFolders;
+            if (!workspaceFolders) {
+              vscode.window.showErrorMessage("No Workspace is open!");
+              return;
+            }
+            const workspacePath = workspaceFolders[0].uri.fsPath;
+            const folderPath = path.join(workspacePath, "/src/schema");
+            if (!fs.existsSync(folderPath)) {
+              fs.mkdirSync(folderPath, { recursive: true });
+              vscode.window.showInformationMessage(`Folder 'schema' created.`);
+            }
+            let result = await generateCustomSchema(
+              "Do what makes sense",
+              message.data
+            );
+            const filepath = path.join(folderPath, "schema.sql");
+            // Write the schema content to the file at the designated filepath
+            fs.writeFile(filepath, result, (err: any) => {
+              // Check if there was an error during file writing
+              if (err) {
+                // If an error occurred, display an error message with the error detail
+                vscode.window.showErrorMessage(
+                  "Error writing file: " + err.message
+                );
+              } else {
+                // If the file was successfully created, show a confirmation message with the file location
+                vscode.window.showInformationMessage(
+                  `File schema.sql created at ${folderPath}`
+                );
+              }
+            });
+            return;
+        }
+      });
     }
   );
 

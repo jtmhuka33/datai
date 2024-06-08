@@ -29,6 +29,10 @@ export function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.
     </head>
     <body>
         <div id="root"></div>
+        <script>
+          const vscode = acquireVsCodeApi();
+          window.vscode = vscode;
+        </script>
         <script src="${scriptUri}"></script>
     </body>
     </html>`;
