@@ -11,13 +11,15 @@ export async function generateCustomSchema (application_context: string, table_d
         },
         {
             role: "user",
-            content: `Generate a PostgreSQL schema based on the following user specifications. The schema should include all necessary tables and fields as described, with proper SQL syntax for creating tables. Ensure that primary keys and foreign keys are correctly defined based on the user inputs. Additionally, consider any provided context about the application type to optimize the schema's relevance and functionality.
+            content: `Generate a PostgreSQL schema based on the following user specifications. The schema should include all necessary tables and fields as described, with proper SQL syntax for creating tables. 
+                    Ensure that primary keys and foreign keys are correctly defined based on the user inputs. Additionally, consider any provided context about the application type to optimize the schema's 
+                    relevance and functionality.
 
             Application Context: ${application_context}
             User-Defined Tables and Columns:
             ${table_definitions}
             
-            Please format the SQL schema with proper data types, constraints, and relationships. Include comments in the SQL for clarity.`
+            Please format the SQL schema with proper data types, constraints, and relationships. Include comments in the SQL for clarity. Only reply with SQL and no additional explanations or text`
             
 
         }
