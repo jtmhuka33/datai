@@ -1,81 +1,43 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import path from "path";
+
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 import { readFileContent } from "./utils/readFileContent";
 import { generateBlogApiOPENAI } from "./generateBloggingApi/generateBloggingApi";
 import { getWebviewContent } from "./getWebviewContent/getWebviewContent";
 import { generateCustomSchema } from "./generateCustomSchema/generateCustomSchema";
+import getWorkspacePath from "./utils/getWorkspacePath";
+import { createFolderIfNotExists } from "./utils/createFolderifNotExists";
+import { writeFile } from "./utils/writeFile";
 
-/**
- * this function is triggered to generate files and code that resembles
- * the schema of a typical blogging application
- */
-// Define a function to generate an SQL schema for a blogging platform
 async function generateSchemaBlogging() {
-  // Access the list of open workspace folders
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-
-  // Check if there is no open workspace, and if so, show an error message and exit the function
-  if (!workspaceFolders) {
-    vscode.window.showErrorMessage("No Workspace is open!");
+  const workspacePath = getWorkspacePath();
+  if (!workspacePath) {
     return;
   }
-  // Get the file system path of the first workspace folder
-  const workspacePath = workspaceFolders[0].uri.fsPath;
 
-  // Define the path for a new folder called "schema" inside the workspace
   const folderPath = path.join(workspacePath, "/src/schema");
+  createFolderIfNotExists(folderPath);
 
-  // Check if the 'schema' folder does not exist
-  if (!fs.existsSync(folderPath)) {
-    // Create the folder and all necessary parent folders with 'recursive: true' option5
-    fs.mkdirSync(folderPath, { recursive: true });
-    // Show an information message confirming the folder creation
-    vscode.window.showInformationMessage(`Folder 'schema' created.`);
-  }
-
-  // Define the SQL schema content as a string
   const content = await generateBlogSchemaOpenAI();
-
-  // Define the full path for the new SQL file within the 'schema' folder
   const filepath = path.join(folderPath, "schema.sql");
-
-  // Write the schema content to the file at the designated filepath
-  fs.writeFile(filepath, content, (err: any) => {
-    // Check if there was an error during file writing
-    if (err) {
-      // If an error occurred, display an error message with the error detail
-      vscode.window.showErrorMessage("Error writing file: " + err.message);
-    } else {
-      // If the file was successfully created, show a confirmation message with the file location
-      vscode.window.showInformationMessage(
-        `File schema.sql created at ${folderPath}`
-      );
-    }
-  });
+  writeFile(filepath, content, `File schema.sql created at ${folderPath}`);
 }
 
 async function generateAPIBlogging() {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  if (!workspaceFolders) {
-    vscode.window.showErrorMessage("No Workspace is open!");
+  const workspacePath = getWorkspacePath();
+  if (!workspacePath) {
     return;
   }
 
-  const workspacePath = workspaceFolders[0].uri.fsPath;
   const folderPath = path.join(workspacePath, "/src/routes");
   const schemaFolderPath = path.join(workspacePath, "/src/schema");
-
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true });
-    vscode.window.showInformationMessage(`Folder 'routes' created `);
-  }
+  createFolderIfNotExists(folderPath);
 
   const schemaContent = await readFileContent(
     path.join(schemaFolderPath, "schema.sql")
   );
-
   if (!schemaContent) {
     vscode.window.showErrorMessage("Schema Content is NULL");
     return;
@@ -108,27 +70,48 @@ async function generateAPIBlogging() {
   }
 }
 
+function handleWebviewMessage(message: { type: string; data: string }) {
+  if (message.type === "generateCustomSchema") {
+    const workspacePath = getWorkspacePath();
+    if (!workspacePath) {
+      return;
+    }
+
+    const folderPath = path.join(workspacePath, "/src/schema");
+    createFolderIfNotExists(folderPath);
+
+    generateCustomSchema("Do what makes sense", message.data).then((result) => {
+      const filepath = path.join(folderPath, "schema.sql");
+      writeFile(filepath, result, `File schema.sql created at ${folderPath}`);
+    });
+  }
+}
+
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "datai" is now active!');
 
-  let disposable = vscode.commands.registerCommand("datai.helloWorld", () => {
-    vscode.window.showInformationMessage("Hello World from datai!");
-  });
-
-  let bloggingSchema = vscode.commands.registerCommand(
-    "datai.bloggingApplicationSchema",
-    generateSchemaBlogging
+  context.subscriptions.push(
+    vscode.commands.registerCommand("datai.helloWorld", () => {
+      vscode.window.showInformationMessage("Hello World from datai!");
+    })
   );
 
-  let bloggingApi = vscode.commands.registerCommand(
-    "datai.bloggingApplicationApi",
-    generateAPIBlogging
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.bloggingApplicationSchema",
+      generateSchemaBlogging
+    )
   );
 
-  //Creating WebView
-  let customiseSchema = vscode.commands.registerCommand(
-    "datai.openSchemaDesigner",
-    function () {
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.bloggingApplicationApi",
+      generateAPIBlogging
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("datai.openSchemaDesigner", () => {
       const panel = vscode.window.createWebviewPanel(
         "schemaDesigner",
         "Schema Designer",
@@ -143,55 +126,15 @@ export function activate(context: vscode.ExtensionContext) {
           ],
         }
       );
+
       panel.webview.html = getWebviewContent(
         panel.webview,
         context.extensionUri
       );
 
-      panel.webview.onDidReceiveMessage(async (message) => {
-        switch (message.type) {
-          case "generateCustomSchema":
-            const workspaceFolders = vscode.workspace.workspaceFolders;
-            if (!workspaceFolders) {
-              vscode.window.showErrorMessage("No Workspace is open!");
-              return;
-            }
-            const workspacePath = workspaceFolders[0].uri.fsPath;
-            const folderPath = path.join(workspacePath, "/src/schema");
-            if (!fs.existsSync(folderPath)) {
-              fs.mkdirSync(folderPath, { recursive: true });
-              vscode.window.showInformationMessage(`Folder 'schema' created.`);
-            }
-            let result = await generateCustomSchema(
-              "Do what makes sense",
-              message.data
-            );
-            const filepath = path.join(folderPath, "schema.sql");
-            // Write the schema content to the file at the designated filepath
-            fs.writeFile(filepath, result, (err: any) => {
-              // Check if there was an error during file writing
-              if (err) {
-                // If an error occurred, display an error message with the error detail
-                vscode.window.showErrorMessage(
-                  "Error writing file: " + err.message
-                );
-              } else {
-                // If the file was successfully created, show a confirmation message with the file location
-                vscode.window.showInformationMessage(
-                  `File schema.sql created at ${folderPath}`
-                );
-              }
-            });
-            return;
-        }
-      });
-    }
+      panel.webview.onDidReceiveMessage(handleWebviewMessage);
+    })
   );
-
-  context.subscriptions.push(bloggingSchema);
-  context.subscriptions.push(disposable);
-  context.subscriptions.push(bloggingApi);
-  context.subscriptions.push(customiseSchema);
 }
 
 export function deactivate() {}
