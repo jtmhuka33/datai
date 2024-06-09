@@ -1,5 +1,12 @@
 import OpenAI from "openai";
 
+/**
+ * This function was created as part of the MVP testing process
+ * to test the generation prompt. 
+ * 
+ * @param content 
+ * @returns string
+ */
 export async function generateBlogApiOPENAI(content: string) {
   const openai = new OpenAI({ apiKey: process.env.API_KEY });
   const completion = await openai.chat.completions.create({
@@ -14,12 +21,12 @@ export async function generateBlogApiOPENAI(content: string) {
         "role": "user",
         "content": "Generate a comprehensive Node.js/Express backend API based on a dynamically generated PostgreSQL schema provided below and include" +
         "ALL the implementation logic for each CRUD (Create, Read, Update, Delete) operation and table described." + 
-        "The API should use express.Router format and be exportable." + 
+        "The API should use express. Router format and be exportable." +
         "Ensure the API includes detailed error handling, uses async/await for database interactions, and supports advanced" + 
         "features such as filtering, sorting, and pagination. The implementation should adhere to the following guidelines:" + 
         "- Export routes using express.Router.\n" + 
-        "- Account for the fact that Each table has its own pre generated route file (e.g., 'users.js', 'posts.js')." +
-        " **CRUD Operations**"+
+        "- Account for the fact that Each table has its own pre generated route file." +
+        " **CRUD Operations**" + 
         "- **Create**: Routes to add new entries to each table. Ensure validation of incoming data to maintain data integrity." +
         "- **Read**: Routes to retrieve entries, supporting filtering by any field, sorting by relevant fields, and pagination to handle large datasets." +
         "- **Update**: Allow updates to existing entries, ensuring that only valid and authorized changes are applied. Use appropriate HTTP methods and include data validation." +
@@ -32,7 +39,7 @@ export async function generateBlogApiOPENAI(content: string) {
         " - Ensure that error responses provide enough information for debugging but do not expose sensitive system details.\n\n6." +
         " **Documentation**:\n   - Each route should be clearly commented, explaining its purpose, the parameters it accepts, and the format of the response it returns."+
         `\n\n --- PostgreSQL Schema Begin --- ${content} --- PostgreSQL Schema End --- `+ 
-        "\n\nPlease format the API code with proper indentation and include comments for each route explaining the purpose and the parameters it accepts. Use async/await for all database interactions. Only include the code and no other text."
+        "\n\n Please format the API code with proper indentation and include comments for each route explaining the purpose and the parameters it accepts. Use async/await for all database interactions. Only include the code and no other text."
       }
     ],
     model: "gpt-4o",
