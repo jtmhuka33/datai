@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 export async function generateCustomApi( content: string) {
 
-    const openai = new OpenAI({ apiKey: process.env.API_KEY})
+    const openai = new OpenAI({ apiKey: process.env.API_KEY});
     const completion = await openai.chat.completions.create({
         messages: [
             {
@@ -37,7 +37,7 @@ export async function generateCustomApi( content: string) {
               }
         ],
         model: "gpt-4o",
-    })
+    });
     const resolvedFirstChoice = completion.choices[0].message.content;
 
     return resolvedFirstChoice as string;
