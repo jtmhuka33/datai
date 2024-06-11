@@ -70,6 +70,50 @@ async function generateAPIBlogging() {
   }
 }
 
+async function generateCustomApi() {
+  const workspacePath = getWorkspacePath();
+  if (!workspacePath) {
+    return;
+  }
+
+  const folderPath = path.join(workspacePath, "/src/routes");
+  const schemaFolderPath = path.join(workspacePath, "/src/schema");
+  createFolderIfNotExists(folderPath);
+
+  const schemaContent = await readFileContent(
+    path.join(schemaFolderPath, "schema.sql")
+  );
+  if (!schemaContent) {
+    vscode.window.showErrorMessage("Schema Content is NULL");
+    return;
+  }
+  const tableNames: string[] = [];
+  const tableRegex = /CREATE TABLE\s+(\w+)/;
+  const filePaths: string[] = [];
+
+  schemaContent.forEach((schema) => {
+    const match = schema.match(tableRegex);
+    if (match) {
+      tableNames.push(match[1]);
+    }
+  });
+
+  tableNames.forEach((name) => {
+    filePaths.push(path.join(folderPath, name + ".js".toLowerCase()));
+  });
+
+  for (let i = 0; i < schemaContent.length; i++) {
+    const content = await generateBlogApiOPENAI(schemaContent[i]);
+    fs.appendFile(filePaths[i], content, (err: any) => {
+      if (err) {
+        vscode.window.showErrorMessage("Error writing file: " + err.message);
+      } else {
+        vscode.window.showInformationMessage(`Done!`);
+      }
+    });
+  }
+}
+
 function handleWebviewMessage(message: { type: string; data: string }) {
   if (message.type === "generateCustomSchema") {
     const workspacePath = getWorkspacePath();
@@ -94,6 +138,13 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("datai.helloWorld", () => {
       vscode.window.showInformationMessage("Hello World from datai!");
     })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.customApiFromCustomSchema",
+      generateCustomApi
+    )
   );
 
   context.subscriptions.push(

@@ -30,6 +30,10 @@
       {
         "command": "datai.openSchemaDesigner",
         "title": "Generate Schema: Custom Schema"
+      },
+      {
+        "command": "datai.customApiFromCustomSchema",
+        "title": "Generate API: Custom Api"
       }
     ]
   },
