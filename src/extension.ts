@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import path from "path";
+const dotenv = require("dotenv");
+dotenv.config({path: path.join(__dirname, "../.env")});
 
 import { generateBlogSchemaOpenAI } from "./generateBloggingSchema/genertateBloggingSchema";
 import { readFileContent } from "./utils/readFileContent";
