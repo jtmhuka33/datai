@@ -34,6 +34,10 @@
       {
         "command": "datai.customApiFromCustomSchema",
         "title": "Generate API: Custom Api"
+      },
+      {
+        "command": "datai.customViewFromCustomSchema",
+        "title": "Generate Views: Custom Views"
       }
     ]
   },

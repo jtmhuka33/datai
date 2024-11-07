@@ -12,6 +12,63 @@ import { generateCustomSchema } from "./generateCustomSchema/generateCustomSchem
 import getWorkspacePath from "./utils/getWorkspacePath";
 import { createFolderIfNotExists } from "./utils/createFolderifNotExists";
 import { writeFile } from "./utils/writeFile";
+import { generateCustomView } from "./generateCustomView/generateCustomView";
+
+
+
+async function generateCustomViewFromSchema() {
+  const workspacePath = getWorkspacePath();
+  if (!workspacePath) {
+    return;
+  }
+
+  const schemafolderPath = path.join(workspacePath, "/src/schema");
+  const filepath = path.join(schemafolderPath, "views.sql");
+  const schemaContent = await readFileContent(
+    path.join(schemafolderPath, "schema.sql")
+  );
+
+  if (!schemaContent) {
+    vscode.window.showErrorMessage("Schema Content is NULL");
+    return;
+  }
+
+  let context = await vscode.window.showInputBox({
+    prompt: "Provide context for the custom view",
+    placeHolder: "Ex.: For a blogging application",
+  }) || null;
+
+  context = context && context.trim() !== '' ? context : null;
+
+  const tableNames: string[] = [];
+  const tableRegex = /CREATE TABLE\s+(\w+)/i;
+
+  schemaContent.forEach((schema) => {
+    const match = schema.match(tableRegex);
+    if (match) {
+      tableNames.push(match[1]);
+    }
+  });
+
+
+  for (let i = 0; i < schemaContent.length; i++) {
+    const content = await generateCustomView(schemaContent[i], context);
+    fs.appendFile(filepath, content, (err: any) => {
+      if (err) {
+        vscode.window.showErrorMessage("Error writing file: " + err.message);
+      } else {
+        vscode.window.showInformationMessage(`Done!`);
+      }
+    });
+  }
+
+  if (!schemaContent) {
+    vscode.window.showErrorMessage("Schema Content is NULL");
+    return;
+  }
+
+}
+
 
 async function generateSchemaBlogging() {
   const workspacePath = getWorkspacePath();
@@ -137,9 +194,10 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "datai" is now active!');
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("datai.helloWorld", () => {
-      vscode.window.showInformationMessage("Hello World from datai!");
-    })
+    vscode.commands.registerCommand(
+      "datai.customViewFromCustomSchema",
+      generateCustomViewFromSchema
+    )
   );
 
   context.subscriptions.push(
