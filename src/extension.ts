@@ -13,7 +13,7 @@ import getWorkspacePath from "./utils/getWorkspacePath";
 import { createFolderIfNotExists } from "./utils/createFolderifNotExists";
 import { writeFile } from "./utils/writeFile";
 import { generateCustomView } from "./generateCustomView/generateCustomView";
-
+import { readFileContentComplete } from "./utils/readFileContentWhole";
 
 
 async function generateCustomViewFromSchema() {
@@ -24,7 +24,7 @@ async function generateCustomViewFromSchema() {
 
   const schemafolderPath = path.join(workspacePath, "/src/schema");
   const filepath = path.join(schemafolderPath, "views.sql");
-  const schemaContent = await readFileContent(
+  const schemaContent = await readFileContentComplete(
     path.join(schemafolderPath, "schema.sql")
   );
 
@@ -40,19 +40,7 @@ async function generateCustomViewFromSchema() {
 
   context = context && context.trim() !== '' ? context : null;
 
-  const tableNames: string[] = [];
-  const tableRegex = /CREATE TABLE\s+(\w+)/i;
-
-  schemaContent.forEach((schema) => {
-    const match = schema.match(tableRegex);
-    if (match) {
-      tableNames.push(match[1]);
-    }
-  });
-
-
-  for (let i = 0; i < schemaContent.length; i++) {
-    const content = await generateCustomView(schemaContent[i], context);
+    const content = await generateCustomView(schemaContent, context);
     fs.appendFile(filepath, content, (err: any) => {
       if (err) {
         vscode.window.showErrorMessage("Error writing file: " + err.message);
@@ -60,7 +48,6 @@ async function generateCustomViewFromSchema() {
         vscode.window.showInformationMessage(`Done!`);
       }
     });
-  }
 
   if (!schemaContent) {
     vscode.window.showErrorMessage("Schema Content is NULL");
