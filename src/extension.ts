@@ -14,7 +14,49 @@ import { createFolderIfNotExists } from "./utils/createFolderifNotExists";
 import { writeFile } from "./utils/writeFile";
 import { generateCustomView } from "./generateCustomView/generateCustomView";
 import { readFileContentComplete } from "./utils/readFileContentWhole";
+import { generateRestHelperFunctions } from "./generateRestHelperFunctions/generateRestHelperFunctions";
 
+
+
+async function generateRestHelperFunctionsFromSchemaView() {
+  const workspacePath = getWorkspacePath();
+  if(!workspacePath){
+    return; 
+  }
+
+  const schemaFolderPath = path.join(workspacePath, "/src/schema");
+  const filepath = path.join(schemaFolderPath, "rest_helper.sql");
+  const schemaContent = await readFileContentComplete(
+    path.join(schemaFolderPath, "schema.sql")
+  );
+
+  if(!schemaContent){
+    vscode.window.showErrorMessage("Schema Content is NULL");
+    return;
+  }
+
+  const viewContent = await readFileContentComplete(
+    path.join(schemaFolderPath, "views.sql")
+  );
+
+  if(!viewContent){
+    vscode.window.showErrorMessage("View Content is NULL");
+    return;
+  }
+
+  let context = await vscode.window.showInputBox({
+    prompt: "Provide extra context for your rest helper functions",
+  }) || null;
+
+  const content = await generateRestHelperFunctions(schemaContent, viewContent, context);
+  fs.appendFile(filepath, content, (err:any) => {
+    if(err){
+      vscode.window.showErrorMessage("Error writing file: " + err.message);
+    }else {
+      vscode.window.showInformationMessage('Done!');
+    }
+  });
+}
 
 async function generateCustomViewFromSchema() {
   const workspacePath = getWorkspacePath();
@@ -184,6 +226,13 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(
       "datai.customViewFromCustomSchema",
       generateCustomViewFromSchema
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.generateRestHelperFunctions",
+      generateRestHelperFunctionsFromSchemaView
     )
   );
 

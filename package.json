@@ -38,6 +38,10 @@
       {
         "command": "datai.customViewFromCustomSchema",
         "title": "Generate Views: Custom Views"
+      },
+      {
+        "command": "datai.generateRestHelperFunctions",
+        "title": "Generate: Rest Helper Functions"
       }
     ]
   },
