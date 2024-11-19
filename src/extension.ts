@@ -35,20 +35,11 @@ async function generateRestHelperFunctionsFromSchemaView() {
     return;
   }
 
-  const viewContent = await readFileContentComplete(
-    path.join(schemaFolderPath, "views.sql")
-  );
-
-  if(!viewContent){
-    vscode.window.showErrorMessage("View Content is NULL");
-    return;
-  }
-
   let context = await vscode.window.showInputBox({
     prompt: "Provide extra context for your rest helper functions",
   }) || null;
 
-  const content = await generateRestHelperFunctions(schemaContent, viewContent, context);
+  const content = await generateRestHelperFunctions(schemaContent, context);
   fs.appendFile(filepath, content, (err:any) => {
     if(err){
       vscode.window.showErrorMessage("Error writing file: " + err.message);
