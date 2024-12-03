@@ -35,11 +35,41 @@ async function generateRestHelperFunctionsFromSchemaView() {
     return;
   }
 
+  const yesOption = "Yes";
+  const noOption = "No";
+  let userFunctions = null;
+
+  const selection = await vscode.window.showInformationMessage(
+    'Do you have your own standardized REST helper functions?',
+        yesOption,
+        noOption
+  );
+
+  if(selection === yesOption){
+    const fileName = await vscode.window.showInputBox({
+      prompt: 'Provide the title of the file containing your standardized REST helper functions'
+    });
+    if(fileName){
+      const restFunctionFilePath = path.join(schemaFolderPath, fileName);
+      try {
+        userFunctions = await readFileContentComplete(
+          restFunctionFilePath
+        );
+        if(!userFunctions){
+          vscode.window.showErrorMessage('Your Rest Helper functions file is empty');
+          return;
+        }
+      }catch (error:any) {
+        vscode.window.showErrorMessage(`Error reading file: ${error.message}`);
+      }
+    }
+  }
+
   let context = await vscode.window.showInputBox({
     prompt: "Provide extra context for your rest helper functions",
   }) || null;
 
-  const content = await generateRestHelperFunctions(schemaContent, context);
+  const content = await generateRestHelperFunctions(schemaContent, context, userFunctions);
   fs.appendFile(filepath, content, (err:any) => {
     if(err){
       vscode.window.showErrorMessage("Error writing file: " + err.message);
@@ -47,6 +77,7 @@ async function generateRestHelperFunctionsFromSchemaView() {
       vscode.window.showInformationMessage('Done!');
     }
   });
+
 }
 
 async function generateCustomViewFromSchema() {
@@ -88,7 +119,6 @@ async function generateCustomViewFromSchema() {
   }
 
 }
-
 
 async function generateSchemaBlogging() {
   const workspacePath = getWorkspacePath();
