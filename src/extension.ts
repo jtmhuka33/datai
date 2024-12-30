@@ -140,6 +140,7 @@ async function generateAPIBlogging() {
     return;
   }
 
+  //TODO: User enters own paths
   const folderPath = path.join(workspacePath, "/src/routes");
   const schemaFolderPath = path.join(workspacePath, "/src/schema");
   createFolderIfNotExists(folderPath);

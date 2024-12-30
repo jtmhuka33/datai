@@ -17,7 +17,7 @@ export async function generateRestHelperFunctions(schemaContent: string, context
                 content: `Generate postgreSQL rest helper stored functions based off of the the given schema and using the provided user specified stored functions.
                  Functions must have clearly defined data types for the their parameters with specified default values for optional parameters
                  Ensure correct SQL syntax
-                 Ensure to use ALL the functions where necessary including the standardized function "rest_helper".
+                 Ensure to use ALL the functions where necessary.
                  Ensure to title the table specific rest helper function by its CRUD operation name followed by the entity name (Ex.: patch_user)
                  Specify the use of the language postgreSQL
                  SQL Schema: 
