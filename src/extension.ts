@@ -224,7 +224,7 @@ async function generateCustomApi() {
   }
 }
 
-function handleWebviewMessage(message: { type: string; data: string }) {
+async function handleWebviewMessage(message: { type: string; data: string }) {
   if (message.type === "generateCustomSchema") {
     const workspacePath = getWorkspacePath();
     if (!workspacePath) {
@@ -234,7 +234,11 @@ function handleWebviewMessage(message: { type: string; data: string }) {
     const folderPath = path.join(workspacePath, "/src/schema");
     createFolderIfNotExists(folderPath);
 
-    generateCustomSchema("Do what makes sense", message.data).then((result) => {
+    let context = await vscode.window.showInputBox({
+      prompt: "Provide additional context to generate the custom schema"
+    }) || null;
+
+    generateCustomSchema(context, message.data).then((result) => {
       const filepath = path.join(folderPath, "schema.sql");
       writeFile(filepath, result, `File schema.sql created at ${folderPath}`);
     });

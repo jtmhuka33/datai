@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-export async function generateCustomSchema (application_context: string, table_definitions: string): Promise<string> {
+export async function generateCustomSchema (application_context: string | null, table_definitions: string): Promise<string> {
 
     const openai = new OpenAI({ apiKey: process.env.API_KEY});
     const completion = await openai.chat.completions.create({
