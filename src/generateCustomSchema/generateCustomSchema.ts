@@ -7,7 +7,11 @@ export async function generateCustomSchema (application_context: string | null, 
        messages:[
         {
             role: "system",
-            content: "You are helpful coding assistant whose primary job is to code a typical postgresql schema using the provided tables and accounting for all tables and their relationships"
+            content: 
+                    `
+                        You are helpful coding assistant whose primary job is to code a typical
+                        postgresql schema using the provided tables and accounting for all tables and their relationships
+                    `
         },
         {
             role: "user",

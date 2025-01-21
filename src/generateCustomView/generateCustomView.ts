@@ -6,23 +6,34 @@ export async function generateCustomView(content: string, context: string | null
        messages:[
         {
             role: "system",
-            content: "You are a helpful coding assistant whose primary job is to generate custom views based on the provided postgreSQL schema"
+            content: 
+            `
+                You are a helpful coding assistant whose primary job is to generate custom
+                views based on the provided postgreSQL schema
+            `
         },
         {
             role: "user",
-            content: `Generate custom views based on the following postgreSQL schema. The views should include all necessary columns and fields as described, with proper SQL syntax for creating views. 
-                    Ensure that the views are optimized for the user's needs and includes any relevant data from the schema. Additionally, consider any provided context about the application type to optimize the view's 
-                    relevance and functionality.
+            content: 
+            `
+                Generate custom views based on the following postgreSQL schema.
+                The views should include all necessary columns and fields as described,
+                with proper SQL syntax for creating views. 
+                Ensure that the views are optimized for the user's needs and includes any relevant data from the schema.
+                Additionally, consider any provided context about the application type to optimize the views' 
+                relevance and functionality.
 
-            SQL Schema:
-            ${content}
+                SQL Schema:
+                ${content}
 
-            Additional Context:
-            ${context}
+                Additional Context:
+                ${context}
             
-            Please format the SQL view with proper data types, constraints, and relationships. Include comments in the SQL for clarity. Only reply with SQL and no additional explanations or text
-            Please add double quotes around column names and table names.
-            Please add short letter aliases to the tables in the from clauses.
+                Please format the SQL view with proper data types, constraints, and relationships.
+                Include comments in the SQL for clarity.
+                Only reply with SQL and no additional explanations or text
+                Please add double quotes around column names and table names.
+                Please add short letter aliases to the tables in the from clauses.
             `
 
         }

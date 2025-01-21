@@ -18,7 +18,7 @@ import { generateRestHelperFunctions } from "./generateRestHelperFunctions/gener
 
 
 
-async function generateRestHelperFunctionsFromSchemaView() {
+async function generateRestHelperFunctionsFromSchema() {
   const workspacePath = getWorkspacePath();
   if(!workspacePath){
     return; 
@@ -234,11 +234,7 @@ async function handleWebviewMessage(message: { type: string; data: string }) {
     const folderPath = path.join(workspacePath, "/src/schema");
     createFolderIfNotExists(folderPath);
 
-    let context = await vscode.window.showInputBox({
-      prompt: "Provide additional context to generate the custom schema"
-    }) || null;
-
-    generateCustomSchema(context, message.data).then((result) => {
+    generateCustomSchema('Do what makes sense', message.data).then((result) => {
       const filepath = path.join(folderPath, "schema.sql");
       writeFile(filepath, result, `File schema.sql created at ${folderPath}`);
     });
@@ -246,42 +242,6 @@ async function handleWebviewMessage(message: { type: string; data: string }) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "datai" is now active!');
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "datai.customViewFromCustomSchema",
-      generateCustomViewFromSchema
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "datai.generateRestHelperFunctions",
-      generateRestHelperFunctionsFromSchemaView
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "datai.customApiFromCustomSchema",
-      generateCustomApi
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "datai.bloggingApplicationSchema",
-      generateSchemaBlogging
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "datai.bloggingApplicationApi",
-      generateAPIBlogging
-    )
-  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand("datai.openSchemaDesigner", () => {
@@ -308,6 +268,43 @@ export function activate(context: vscode.ExtensionContext) {
       panel.webview.onDidReceiveMessage(handleWebviewMessage);
     })
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.customViewFromCustomSchema",
+      generateCustomViewFromSchema
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.generateRestHelperFunctions",
+      generateRestHelperFunctionsFromSchema
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.customApiFromCustomSchema",
+      generateCustomApi
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.bloggingApplicationSchema",
+      generateSchemaBlogging
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "datai.bloggingApplicationApi",
+      generateAPIBlogging
+    )
+  );
+
+  
 }
 
 export function deactivate() {}
