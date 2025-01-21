@@ -1,6 +1,31 @@
 # datai README
 
-This is the README for your extension "datai". After writing up a brief description, we recommend including the following sections.
+# Installation Instructions
+
+1. CLONE / Download extension repository and open it in Visual Studio Code
+
+2. COPY ".env-example" to ".env"
+
+3. REPLACE "API_KEY" value with the provided Open AI API key or generate your own API key here: https://platform.openai.com/settings/<OpenAI API Project>/api-keys
+
+4. INSTALL dependencies using "npm i" or "npm install"
+
+
+# Usage Instructions
+
+
+1. Once the repository is open in Visual Studio Code press "F5" to open a Visucal Code Window with the extension loaded.
+
+2. Open a project in the Visual Studio Code with the extension loaded.
+
+3. press "CTRL + SHIFT + P" (Windows / Linux) or "SHIFT + COMMAND + P" (MacOS) to open the VSCode command pallete. 
+
+4. Search for the following commands:
+	- Generate Schema: Custom Schema 
+	- Generate Views: Custom Views (schema.sql file containing tables required)
+	- Generate: Rest Helper Functions (schema.sql file containing tables required, file with standardized REST functions required if option was chosen)
+
+5. Begin generating!
 
 ## Features
 
